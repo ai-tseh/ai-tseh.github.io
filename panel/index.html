@@ -1,0 +1,421 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Панель из старого телефона — AI ЦЕХ</title>
+<meta name="description" content="Старый Android → панель для компьютера: нагрузка, музыка, лимиты Claude и Codex, подтверждения команд с телефона. Ставит агент по промпту. Windows и macOS.">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="AI ЦЕХ">
+<meta property="og:title" content="Панель из старого телефона — AI ЦЕХ">
+<meta property="og:description" content="Старый Android → панель для компьютера: нагрузка, музыка, лимиты Claude и Codex, подтверждения команд с телефона. Ставит агент по промпту. Windows и macOS.">
+<meta property="og:url" content="https://ai-tseh.github.io/panel/">
+<meta name="theme-color" content="#14161B">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='6' fill='%23FFC21A'/%3E%3Ctext x='16' y='22' font-family='Arial' font-weight='900' font-size='14' text-anchor='middle' fill='%2314161B'%3EAI%3C/text%3E%3C/svg%3E">
+<style>
+:root{padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+body{margin:0}
+img{max-width:100%}
+[hidden]{display:none!important}
+</style>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Golos+Text:wght@400;500;600&family=JetBrains+Mono:wght@500;700&family=Unbounded:wght@600;700&display=swap">
+<style>
+/* Layout: одна колонка до 680px. Гайд оформлен как наряд в цеху: сигнальная лента, бирки шагов, паспорт работы. */
+:root{
+  --bg:#ECEEF1; --surface:#FFFFFF; --ink:#14161B; --muted:#596170; --line:#D3D8DF;
+  --accent:#FFC21A; --on-accent:#14161B; --link:#1D4ED8; --ok:#167A4C; --ok-bg:#E3F4EA;
+  --code-bg:#16181D; --code-fg:#E9ECF1; --code-muted:#9AA3B2; --code-line:#2C313A;
+  --warn-bg:#FFF5D4; --tape-dark:#14161B;
+  --f-display:"Unbounded","Arial Black",system-ui,sans-serif;
+  --f-body:"Golos Text","Segoe UI",Roboto,system-ui,sans-serif;
+  --f-mono:"JetBrains Mono",ui-monospace,Consolas,"Courier New",monospace;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --bg:#101216; --surface:#191C22; --ink:#ECEEF2; --muted:#9AA2AF; --line:#2B3039;
+  --accent:#FFC21A; --on-accent:#14161B; --link:#93B4FF; --ok:#4CC98C; --ok-bg:#15291F;
+  --code-bg:#0A0B0E; --code-fg:#E9ECF1; --code-muted:#8E97A6; --code-line:#252A32;
+  --warn-bg:#2A2410; --tape-dark:#0A0B0E; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#101216; --surface:#191C22; --ink:#ECEEF2; --muted:#9AA2AF; --line:#2B3039;
+  --accent:#FFC21A; --on-accent:#14161B; --link:#93B4FF; --ok:#4CC98C; --ok-bg:#15291F;
+  --code-bg:#0A0B0E; --code-fg:#E9ECF1; --code-muted:#8E97A6; --code-line:#252A32;
+  --warn-bg:#2A2410; --tape-dark:#0A0B0E; color-scheme:dark}
+
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--ink);font:16px/1.6 var(--f-body);-webkit-text-size-adjust:100%}
+body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);z-index:10;background:var(--bg)}
+a{color:var(--link);text-underline-offset:3px}
+:focus-visible{outline:3px solid var(--accent);outline-offset:2px;border-radius:6px}
+.wrap{max-width:680px;margin:0 auto;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+.tape{height:10px;background:repeating-linear-gradient(-45deg,var(--accent) 0 12px,var(--tape-dark) 12px 24px)}
+
+.top{display:flex;align-items:center;justify-content:space-between;gap:12px;padding-block:14px}
+.brand{font-family:var(--f-display);font-weight:700;font-size:15px;letter-spacing:.06em;color:var(--ink);text-decoration:none}
+.label{font-family:var(--f-mono);font-size:11px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--muted)}
+
+.hero{display:grid;gap:14px;padding-block:18px 8px}
+h1{font-family:var(--f-display);font-weight:700;font-size:clamp(30px,8.4vw,48px);line-height:1.06;letter-spacing:-.01em;margin:0;text-wrap:balance}
+h1 mark{background:linear-gradient(transparent 60%,var(--accent) 60%);color:inherit;padding:0 .04em}
+.lead{font-size:18px;line-height:1.55;margin:0;max-width:60ch}
+.passport{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));margin:6px 0 0;border-top:2px solid var(--ink)}
+.passport div{padding:10px 10px 10px 0;border-bottom:1px solid var(--line);min-width:0}
+.passport div:nth-child(odd){padding-right:14px}
+.passport dt{font-family:var(--f-mono);font-size:10.5px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--muted)}
+.passport dd{margin:2px 0 0;font-weight:600;font-size:15px;line-height:1.35}
+
+.progress{position:sticky;top:env(safe-area-inset-top,0px);z-index:5;background:var(--bg);padding-block:10px;margin-top:10px;border-bottom:1px solid var(--line)}
+.progress-row{display:flex;align-items:center;gap:12px}
+.bar{flex:1;height:8px;border-radius:99px;background:var(--line);overflow:hidden}
+.bar i{display:block;height:100%;width:0;background:var(--accent);transition:width .3s ease}
+.progress b{font-family:var(--f-mono);font-size:12px;letter-spacing:.06em;white-space:nowrap;font-variant-numeric:tabular-nums}
+
+.flow{display:grid;gap:18px;padding-block:18px 8px}
+.note{display:grid;gap:10px;border:1.5px dashed var(--line);border-radius:14px;padding:14px 16px}
+.note p{margin:0}
+.btn{appearance:none;font:600 14px/1 var(--f-body);border-radius:10px;padding:11px 14px;cursor:pointer;border:1.5px solid var(--ink);background:transparent;color:var(--ink);justify-self:start;text-decoration:none;display:inline-flex;align-items:center;gap:8px}
+.btn.solid{background:var(--accent);border-color:var(--accent);color:var(--on-accent)}
+
+.step{background:var(--surface);border:1px solid var(--line);border-radius:16px;padding:20px 18px;display:grid;gap:14px;min-width:0}
+.step.is-done{border-color:var(--ok)}
+.step-head{display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap}
+.stamp{font-family:var(--f-mono);font-weight:700;font-size:12px;letter-spacing:.14em;background:var(--accent);color:var(--on-accent);padding:5px 9px;border-radius:5px;text-transform:uppercase}
+.step.is-done .stamp{background:var(--ok);color:var(--surface)}
+h2{font-family:var(--f-display);font-weight:600;font-size:clamp(20px,5.4vw,24px);line-height:1.2;margin:0;text-wrap:balance}
+h3{font-size:16px;margin:4px 0 0;font-weight:600}
+.step p,.step ol,.step ul{margin:0}
+.step ol,.step ul{padding-left:1.25em;display:grid;gap:6px}
+.done{appearance:none;font:600 13px/1 var(--f-body);border-radius:99px;padding:8px 12px;border:1.5px solid var(--line);background:transparent;color:var(--muted);cursor:pointer}
+.done[aria-pressed="true"]{border-color:var(--ok);background:var(--ok-bg);color:var(--ok)}
+.muted{color:var(--muted);font-size:14.5px}
+kbd{font-family:var(--f-mono);font-size:.85em;border:1px solid var(--line);border-bottom-width:2px;border-radius:5px;padding:1px 6px;background:var(--bg)}
+.inline{font-family:var(--f-mono);font-size:.88em;background:var(--bg);border:1px solid var(--line);border-radius:5px;padding:1px 5px;overflow-wrap:anywhere}
+
+.code{background:var(--code-bg);border-radius:12px;overflow:hidden;min-width:0}
+.code-head{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:8px 8px 8px 14px;border-bottom:1px solid var(--code-line)}
+.code-head span{font-family:var(--f-mono);font-size:11px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--code-muted)}
+.copy{appearance:none;font:600 13px/1 var(--f-body);color:var(--code-fg);background:transparent;border:1.5px solid var(--code-muted);border-radius:8px;padding:8px 12px;cursor:pointer;white-space:nowrap}
+.copy.ok{background:var(--accent);border-color:var(--accent);color:var(--on-accent)}
+.code pre{margin:0;padding:12px 14px 14px;overflow-x:auto;color:var(--code-fg);font:500 13.5px/1.6 var(--f-mono);tab-size:2}
+.code.prompt pre{white-space:pre-wrap;overflow-wrap:anywhere;font:400 14px/1.6 var(--f-body)}
+.code.link pre{white-space:pre-wrap;overflow-wrap:anywhere}
+
+.tab{display:grid;gap:12px;min-width:0}
+.tab ol{margin:0;padding-left:1.25em;display:grid;gap:6px}
+.tab p{margin:0}
+.os{display:inline-flex;border:1.5px solid var(--line);border-radius:10px;padding:3px;gap:3px;justify-self:start}
+.os button{appearance:none;font:600 13px/1 var(--f-body);border:0;border-radius:7px;padding:8px 12px;background:transparent;color:var(--muted);cursor:pointer}
+.os button[aria-pressed="true"]{background:var(--ink);color:var(--bg)}
+
+.warn{background:var(--warn-bg);border-radius:12px;overflow:hidden;display:grid}
+.warn::before{content:"";height:6px;background:repeating-linear-gradient(-45deg,var(--accent) 0 9px,var(--tape-dark) 9px 18px)}
+.warn div{padding:12px 14px 14px;display:grid;gap:6px}
+.warn strong{font-family:var(--f-mono);font-size:11px;letter-spacing:.14em;text-transform:uppercase}
+.warn p{margin:0;font-size:15px}
+
+.why{display:grid;gap:10px}
+.why ul{margin:0;padding-left:1.25em;display:grid;gap:6px}
+
+.plain{display:grid;gap:12px;padding-block:8px}
+.plain h2{font-size:clamp(20px,5.4vw,24px)}
+.plain ul{margin:0;padding-left:1.25em;display:grid;gap:8px}
+details{border-top:1px solid var(--line);padding-block:12px}
+details:last-of-type{border-bottom:1px solid var(--line)}
+summary{cursor:pointer;font-weight:600;list-style:none;display:flex;justify-content:space-between;gap:12px}
+summary::-webkit-details-marker{display:none}
+summary::after{content:"+";font-family:var(--f-mono);font-weight:700}
+details[open] summary::after{content:"−"}
+details p{margin:8px 0 0}
+
+.cta{background:var(--ink);color:var(--bg);border-radius:18px;padding:24px 20px;display:grid;gap:12px;margin-block:22px 10px}
+.cta h2{color:var(--bg)}
+.cta p{margin:0;opacity:.85}
+footer{padding-block:12px 32px;color:var(--muted);font-size:13px}
+footer p{margin:0 0 4px}
+
+@media (max-width:380px){.passport{grid-template-columns:1fr}.passport div:nth-child(odd){padding-right:0}}
+@media (prefers-reduced-motion:reduce){*{transition:none!important}}
+</style>
+
+</head>
+<body>
+<div class="tape" aria-hidden="true"></div>
+<header class="wrap top">
+  <a class="brand" href="https://www.instagram.com/ai.tseh/" target="_blank" rel="noopener">AI ЦЕХ</a>
+  <span class="label">Гайд · Панель</span>
+</header>
+
+<main class="wrap">
+  <section class="hero">
+    <p class="label">Старый Android → панель для компьютера</p>
+    <h1>Панель из <mark>старого телефона</mark></h1>
+    <p class="lead">Телефон стоит у клавиатуры и показывает загрузку процессора, памяти и сети, музыку, лимиты Claude и Codex, твои сессии. Когда агент просит разрешение на команду, отвечаешь «Разрешить» или «Запретить» прямо с телефона.</p>
+    <dl class="passport">
+      <div><dt>Время</dt><dd>около 20 минут</dd></div>
+      <div><dt>Цена</dt><dd>бесплатно, открытый код</dd></div>
+      <div><dt>Компьютер</dt><dd>Windows или macOS</dd></div>
+      <div><dt>Телефон</dt><dd>Android 5 и новее</dd></div>
+    </dl>
+  </section>
+
+  <div class="progress" aria-live="polite">
+    <div class="progress-row">
+      <div class="bar" aria-hidden="true"><i id="bar"></i></div>
+      <b id="count">0 из 4</b>
+    </div>
+  </div>
+
+  <div class="flow">
+    <div class="note">
+      <p><b>Делай с компьютера.</b> Программа ставится на компьютер, и промпты удобнее вставлять там. Скинь ссылку себе в Telegram или на почту и открой её на компьютере. Телефон держи рядом и на зарядке.</p>
+      <button class="btn" type="button" data-copy data-copy-text="https://ai-tseh.github.io/panel/">Скопировать ссылку на гайд</button>
+    </div>
+
+    <section class="why">
+      <h2>Что за проект</h2>
+      <p>PhoneBox — открытый проект на GitHub: <a href="https://github.com/ersinkoc/phonebox" target="_blank" rel="noopener">github.com/ersinkoc/phonebox</a>.</p>
+      <ul>
+        <li>лицензия MIT: бесплатно, можно менять под себя;</li>
+        <li>больше 6 000 звёзд на GitHub, обновляется почти каждый день;</li>
+        <li>без облака, без аккаунтов и без root на телефоне;</li>
+        <li>больше сотни виджетов и готовые шаблоны экранов.</li>
+      </ul>
+    </section>
+
+    <!-- ШАГ 1 -->
+    <article class="step" id="s1">
+      <div class="step-head">
+        <span class="stamp">Шаг 1</span>
+        <button class="done" type="button" data-step="s1" aria-pressed="false">Отметить</button>
+      </div>
+      <h2>Открой Claude Code или Codex</h2>
+      <p>Программу ставит и настраивает ИИ-агент на твоём компьютере. Выбери агента, которым пользуешься:</p>
+      <div class="os" role="group" aria-label="Агент">
+        <button type="button" data-tab-btn="agent:claude" aria-pressed="true">Claude</button>
+        <button type="button" data-tab-btn="agent:codex" aria-pressed="false">Codex</button>
+      </div>
+      <div class="tab" data-tab="agent:claude">
+        <ol>
+          <li>Открой приложение Claude. Если его нет — скачай для Windows или macOS с <a href="https://claude.ai/download" target="_blank" rel="noopener">claude.ai/download</a> и войди.</li>
+          <li>Перейди на вкладку <b>Code</b> и выбери папку «Документы».</li>
+        </ol>
+        <p class="muted">Режим Code есть в платной подписке Claude. Привык к терминалу — открой папку и набери <span class="inline">claude</span>, это то же самое.</p>
+      </div>
+      <div class="tab" data-tab="agent:codex" hidden>
+        <ol>
+          <li>Открой приложение Codex или терминал. Если Codex нет — поставь по <a href="https://developers.openai.com/codex" target="_blank" rel="noopener">официальной инструкции</a> и войди через аккаунт ChatGPT.</li>
+          <li>Выбери папку «Документы». В терминале — так:</li>
+        </ol>
+        <div class="code">
+          <div class="code-head"><span>Терминал · Windows и macOS</span><button class="copy" type="button" data-copy>Скопировать</button></div>
+          <pre><code>cd ~/Documents
+codex</code></pre>
+        </div>
+        <p class="muted">Лимиты Codex зависят от твоего тарифа ChatGPT.</p>
+      </div>
+      <p>Промпты одинаковые для Windows и Mac: агент сам определит систему. Когда он спрашивает разрешение на действие, читай, что он собирается сделать, и разрешай.</p>
+    </article>
+
+    <!-- ШАГ 2 -->
+    <article class="step" id="s2">
+      <div class="step-head">
+        <span class="stamp">Шаг 2</span>
+        <button class="done" type="button" data-step="s2" aria-pressed="false">Отметить</button>
+      </div>
+      <h2>Вставь промпт — агент поставит программу</h2>
+      <p>Агент сам скачает официальный установщик, проверит его и откроет настройки панели в браузере.</p>
+      <div class="code prompt">
+        <div class="code-head"><span>Промпт · Установка</span><button class="copy" type="button" data-copy>Скопировать</button></div>
+        <pre><code>Установи мне PhoneBox — панель для компьютера на старом Android-телефоне. Проект: https://github.com/ersinkoc/phonebox
+
+1. Определи мою систему (Windows или macOS). Прочитай README и docs/SETUP.md.
+2. Установи программу официальным способом из README: на Windows — скрипт setup.ps1, на macOS — setup.sh. Перед запуском коротко расскажи, что делает скрипт.
+3. Если Windows SmartScreen или антивирус предупреждает — объясни простыми словами, почему (программа пока без цифровой подписи), и подожди моего решения.
+4. Проверь, что настройки открываются по адресу http://127.0.0.1:8765, и открой их в браузере.
+
+Ставь только из официального репозитория. Перед каждым шагом коротко пиши, что делаешь.</code></pre>
+      </div>
+      <div class="warn"><div>
+        <strong>Предупреждение Windows — это нормально</strong>
+        <p>Программа для Windows пока без цифровой подписи, поэтому SmartScreen или антивирус могут предупредить. Установщик сам проверяет контрольную сумму скачанного файла. Ставь только с официального GitHub по ссылке выше.</p>
+      </div></div>
+    </article>
+
+    <!-- ШАГ 3 -->
+    <article class="step" id="s3">
+      <div class="step-head">
+        <span class="stamp">Шаг 3</span>
+        <button class="done" type="button" data-step="s3" aria-pressed="false">Отметить</button>
+      </div>
+      <h2>Подключи телефон</h2>
+      <p>Выбери, как подключишь телефон, и скопируй промпт. Агент сделает всё на компьютере и подскажет, что нажать на телефоне.</p>
+      <div class="os" role="group" aria-label="Подключение">
+        <button type="button" data-tab-btn="conn:usb" aria-pressed="true">По кабелю</button>
+        <button type="button" data-tab-btn="conn:wifi" aria-pressed="false">По Wi-Fi</button>
+      </div>
+      <div class="tab" data-tab="conn:usb">
+        <div class="code prompt">
+          <div class="code-head"><span>Промпт · По кабелю</span><button class="copy" type="button" data-copy>Скопировать</button></div>
+          <pre><code>Подключаю Android-телефон к PhoneBox по USB-кабелю. Веди меня по шагам:
+1. Скажи, как на моём телефоне включить «Для разработчиков» и «Отладку по USB».
+2. Когда подключу кабель, проверь, что компьютер видит телефон, и напомни разрешить отладку на экране телефона.
+3. Поставь на телефон приложение PhoneBox так, как описано в README (установщик или Settings → General → Install the phone app), и проверь, что панель открылась.</code></pre>
+        </div>
+        <p class="muted">Руками на телефоне: 7 раз нажать «Номер сборки» в разделе «О телефоне», включить «Отладку по USB» и разрешить её, когда подключишь кабель. Кабель нужен с передачей данных, не только зарядный.</p>
+      </div>
+      <div class="tab" data-tab="conn:wifi" hidden>
+        <div class="code prompt">
+          <div class="code-head"><span>Промпт · По Wi-Fi</span><button class="copy" type="button" data-copy>Скопировать</button></div>
+          <pre><code>Подключаю Android-телефон к PhoneBox по Wi-Fi, без кабеля. Веди меня по шагам:
+1. Дай прямую ссылку на файл .apk из последнего релиза https://github.com/ersinkoc/phonebox/releases/latest — я открою её на телефоне и установлю.
+2. В настройках PhoneBox включи подключение без кабеля (General → Wi-Fi &amp; Tailscale → Let the phone connect without the USB cable), сохрани и перезапусти агента. Если сам не можешь — скажи, где нажать.
+3. Открой страницу сопряжения с QR-кодом (Pair a phone over Wi-Fi) и подскажи, как отсканировать его телефоном и сверить проверочный код.</code></pre>
+        </div>
+        <p class="muted">Руками на телефоне: скачать и установить APK (телефон спросит разрешение на установку из браузера), отсканировать QR-код и сверить код. Телефон и компьютер должны быть в одной сети.</p>
+      </div>
+      <div class="warn"><div>
+        <strong>Приложение — только с GitHub</strong>
+        <p>В магазинах приложений PhoneBox нет. Ставь APK только со страницы релизов проекта. Отладку по USB разрешай только своему компьютеру.</p>
+      </div></div>
+    </article>
+
+    <!-- ШАГ 4 -->
+    <article class="step" id="s4">
+      <div class="step-head">
+        <span class="stamp">Шаг 4</span>
+        <button class="done" type="button" data-step="s4" aria-pressed="false">Отметить</button>
+      </div>
+      <h2>Настрой экран и подтверждения с телефона</h2>
+      <div class="code prompt">
+        <div class="code-head"><span>Промпт · Настройка</span><button class="copy" type="button" data-copy>Скопировать</button></div>
+        <pre><code>Помоги настроить мою панель PhoneBox.
+1. Открой настройки http://127.0.0.1:8765 и подскажи, как в разделе Pages выбрать шаблоны Home, System, AI quotas и Sessions, расставить виджеты и сохранить.
+2. Включи подтверждения с телефона. Для Claude Code: Settings → General → Claude Code permission prompts → Install hook. Для Codex: AI coding agent permission prompts → установить хук, потом напомни мне один раз одобрить его в Codex через /hooks. Перед установкой скажи, какой файл меняет хук и где лежит резервная копия.
+3. Проверь, что всё работает: запроси у меня разрешение на безобидную команду, чтобы карточка появилась на телефоне.</code></pre>
+      </div>
+      <p>Теперь, когда агент просит разрешение, на телефоне появляется карточка с проектом и командой и кнопками <b>Allow</b> и <b>Deny</b>. Страницы панели листаются свайпом или кнопками громкости.</p>
+      <div class="warn"><div>
+        <strong>Хук можно убрать в любой момент</strong>
+        <p>Кнопка Remove hook в тех же настройках. Если телефон не подключён или ты не ответил, агент спросит в терминале как обычно. Резервная копия настроек Claude Code лежит рядом: <span class="inline">~/.claude/settings.json.phonebox.bak</span>.</p>
+      </div></div>
+    </article>
+
+    <section class="plain">
+      <h2>Честно о главном</h2>
+      <ul>
+        <li><b>Нужен Android.</b> Версия для iPhone экспериментальная, без готовых сборок.</li>
+        <li><b>Не все виджеты работают везде.</b> Данные о видеокарте, музыке и громкости зависят от компьютера и системы.</li>
+        <li><b>Программа без подписи на Windows.</b> Предупреждение SmartScreen ожидаемо, поэтому ставь только с официального GitHub.</li>
+        <li><b>Без облака.</b> Свои аккаунты и телеметрия в PhoneBox не используются. Виджеты погоды, лимитов и GitHub сами ходят в интернет за данными.</li>
+        <li><b>Держи телефон на зарядке.</b> Экран работает постоянно.</li>
+      </ul>
+    </section>
+
+    <section class="plain">
+      <h2>Если что-то не работает</h2>
+      <div>
+        <details>
+          <summary>Любая ошибка</summary>
+          <p>Напиши в тот же чат с агентом, что видишь на экране, или вставь скриншот. Он сам разберётся.</p>
+        </details>
+        <details>
+          <summary>Компьютер не видит телефон по кабелю</summary>
+          <p>Возьми другой кабель: зарядные часто не передают данные. Проверь, что «Отладка по USB» включена и ты разрешил её на экране телефона.</p>
+        </details>
+        <details>
+          <summary>Как удалить PhoneBox</summary>
+          <p>Скажи агенту: «Удали PhoneBox официальным способом из docs/SETUP.md и убери хуки». Настройки он может сохранить или стереть — как попросишь.</p>
+        </details>
+      </div>
+    </section>
+
+    <section class="cta">
+      <span class="label" style="color:inherit;opacity:.7">AI ЦЕХ</span>
+      <h2>Панель работает? Дальше — больше</h2>
+      <p>Разбираю нейросети и Claude на практике: что реально работает, с готовыми промптами и гайдами вроде этого. Подпишись, чтобы не пропустить следующий.</p>
+      <a class="btn solid" href="https://www.instagram.com/ai.tseh/" target="_blank" rel="noopener">Подписаться на @ai.tseh</a>
+    </section>
+  </div>
+</main>
+
+<footer class="wrap">
+  <p>Проект: <a href="https://github.com/ersinkoc/phonebox" target="_blank" rel="noopener">github.com/ersinkoc/phonebox</a>, лицензия MIT.</p>
+  <p>Гайд сверен с README и документацией проекта (версия 0.9.30) 26 ноября 2026.</p>
+</footer>
+
+<script>
+(function(){
+  var KEY = 'aitseh-guide-panel';
+  var state = {};
+  try { state = JSON.parse(localStorage.getItem(KEY) || '{}') || {}; } catch (e) { state = {}; }
+  state.done = state.done || {}; state.tabs = state.tabs || {};
+  function save(){ try { localStorage.setItem(KEY, JSON.stringify(state)); } catch (e) {} }
+
+  // Копирование
+  document.addEventListener('click', function(e){
+    var b = e.target.closest('[data-copy]');
+    if (!b) return;
+    var text = b.getAttribute('data-copy-text');
+    var codeEl = null;
+    if (!text) { var box = b.closest('.code'); codeEl = box && box.querySelector('code'); text = codeEl ? codeEl.textContent : ''; }
+    if (!b.dataset.label) b.dataset.label = b.textContent;
+    function flash(msg){
+      b.textContent = msg; b.classList.add('ok');
+      clearTimeout(b._t); b._t = setTimeout(function(){ b.textContent = b.dataset.label; b.classList.remove('ok'); }, 1800);
+    }
+    function legacyCopy(){
+      // Встроенные браузеры (Instagram, Telegram) часто не дают Clipboard API — копируем через скрытое поле.
+      var ta = document.createElement('textarea');
+      ta.value = text; ta.setAttribute('readonly', '');
+      ta.style.cssText = 'position:fixed;top:0;left:0;width:1px;height:1px;opacity:0;font-size:16px';
+      document.body.appendChild(ta);
+      ta.focus(); ta.select(); try { ta.setSelectionRange(0, text.length); } catch (e) {}
+      var ok = false; try { ok = document.execCommand('copy'); } catch (e) { ok = false; }
+      document.body.removeChild(ta);
+      return ok;
+    }
+    function fallback(){
+      if (legacyCopy()) { flash('Скопировано'); return; }
+      if (codeEl) { var r = document.createRange(); r.selectNodeContents(codeEl); var s = getSelection(); s.removeAllRanges(); s.addRange(r); flash('Выделено — скопируй'); }
+      else { flash(text); }
+    }
+    try { navigator.clipboard.writeText(text).then(function(){ flash('Скопировано'); }, fallback); } catch (err) { fallback(); }
+  });
+
+  // Переключатели (агент)
+  function setTab(group, value){
+    document.querySelectorAll('[data-tab^="' + group + ':"]').forEach(function(el){ el.hidden = el.getAttribute('data-tab') !== group + ':' + value; });
+    document.querySelectorAll('[data-tab-btn^="' + group + ':"]').forEach(function(btn){ btn.setAttribute('aria-pressed', String(btn.getAttribute('data-tab-btn') === group + ':' + value)); });
+  }
+  document.querySelectorAll('[data-tab-btn]').forEach(function(btn){
+    btn.addEventListener('click', function(){
+      var p = btn.getAttribute('data-tab-btn').split(':');
+      state.tabs[p[0]] = p[1]; save(); setTab(p[0], p[1]);
+    });
+  });
+  Object.keys(state.tabs).forEach(function(g){ setTab(g, state.tabs[g]); });
+
+  // Отметки шагов
+  var buttons = Array.prototype.slice.call(document.querySelectorAll('[data-step]'));
+  function render(){
+    var n = 0;
+    buttons.forEach(function(btn){
+      var id = btn.getAttribute('data-step'), on = !!state.done[id];
+      if (on) n++;
+      btn.setAttribute('aria-pressed', String(on));
+      btn.textContent = on ? 'Сделано ✓' : 'Отметить';
+      var card = document.getElementById(id); if (card) card.classList.toggle('is-done', on);
+    });
+    document.getElementById('count').textContent = n + ' из ' + buttons.length;
+    document.getElementById('bar').style.width = (buttons.length ? n / buttons.length * 100 : 0) + '%';
+  }
+  buttons.forEach(function(btn){
+    btn.addEventListener('click', function(){ var id = btn.getAttribute('data-step'); state.done[id] = !state.done[id]; save(); render(); });
+  });
+  render();
+})();
+</script>
+
+</body>
+</html>
