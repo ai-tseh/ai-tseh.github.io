@@ -342,7 +342,19 @@ codex</code></pre>
       b.textContent = msg; b.classList.add('ok');
       clearTimeout(b._t); b._t = setTimeout(function(){ b.textContent = b.dataset.label; b.classList.remove('ok'); }, 1800);
     }
+    function legacyCopy(){
+      // Встроенные браузеры (Instagram, Telegram) часто не дают Clipboard API — копируем через скрытое поле.
+      var ta = document.createElement('textarea');
+      ta.value = text; ta.setAttribute('readonly', '');
+      ta.style.cssText = 'position:fixed;top:0;left:0;width:1px;height:1px;opacity:0;font-size:16px';
+      document.body.appendChild(ta);
+      ta.focus(); ta.select(); try { ta.setSelectionRange(0, text.length); } catch (e) {}
+      var ok = false; try { ok = document.execCommand('copy'); } catch (e) { ok = false; }
+      document.body.removeChild(ta);
+      return ok;
+    }
     function fallback(){
+      if (legacyCopy()) { flash('Скопировано'); return; }
       if (codeEl) { var r = document.createRange(); r.selectNodeContents(codeEl); var s = getSelection(); s.removeAllRanges(); s.addRange(r); flash('Выделено — скопируй'); }
       else { flash(text); }
     }
