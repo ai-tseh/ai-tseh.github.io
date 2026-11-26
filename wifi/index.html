@@ -1,0 +1,407 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Wi-Fi быстрее с Claude — AI ЦЕХ</title>
+<meta name="description" content="Готовые промпты для Claude Code и Codex: найти, что тормозит Wi-Fi, исправить и выгнать чужие устройства. Windows и macOS.">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="AI ЦЕХ">
+<meta property="og:title" content="Wi-Fi быстрее с Claude — AI ЦЕХ">
+<meta property="og:description" content="Готовые промпты для Claude Code и Codex: найти, что тормозит Wi-Fi, исправить и выгнать чужие устройства. Windows и macOS.">
+<meta property="og:url" content="https://ai-tseh.github.io/wifi/">
+<meta name="theme-color" content="#14161B">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='6' fill='%23FFC21A'/%3E%3Ctext x='16' y='22' font-family='Arial' font-weight='900' font-size='14' text-anchor='middle' fill='%2314161B'%3EAI%3C/text%3E%3C/svg%3E">
+<style>
+:root{padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+body{margin:0}
+img{max-width:100%}
+[hidden]{display:none!important}
+</style>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Golos+Text:wght@400;500;600&family=JetBrains+Mono:wght@500;700&family=Unbounded:wght@600;700&display=swap">
+<style>
+/* Layout: одна колонка до 680px. Гайд оформлен как наряд в цеху: сигнальная лента, бирки шагов, паспорт работы. */
+:root{
+  --bg:#ECEEF1; --surface:#FFFFFF; --ink:#14161B; --muted:#596170; --line:#D3D8DF;
+  --accent:#FFC21A; --on-accent:#14161B; --link:#1D4ED8; --ok:#167A4C; --ok-bg:#E3F4EA;
+  --code-bg:#16181D; --code-fg:#E9ECF1; --code-muted:#9AA3B2; --code-line:#2C313A;
+  --warn-bg:#FFF5D4; --tape-dark:#14161B;
+  --f-display:"Unbounded","Arial Black",system-ui,sans-serif;
+  --f-body:"Golos Text","Segoe UI",Roboto,system-ui,sans-serif;
+  --f-mono:"JetBrains Mono",ui-monospace,Consolas,"Courier New",monospace;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --bg:#101216; --surface:#191C22; --ink:#ECEEF2; --muted:#9AA2AF; --line:#2B3039;
+  --accent:#FFC21A; --on-accent:#14161B; --link:#93B4FF; --ok:#4CC98C; --ok-bg:#15291F;
+  --code-bg:#0A0B0E; --code-fg:#E9ECF1; --code-muted:#8E97A6; --code-line:#252A32;
+  --warn-bg:#2A2410; --tape-dark:#0A0B0E; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#101216; --surface:#191C22; --ink:#ECEEF2; --muted:#9AA2AF; --line:#2B3039;
+  --accent:#FFC21A; --on-accent:#14161B; --link:#93B4FF; --ok:#4CC98C; --ok-bg:#15291F;
+  --code-bg:#0A0B0E; --code-fg:#E9ECF1; --code-muted:#8E97A6; --code-line:#252A32;
+  --warn-bg:#2A2410; --tape-dark:#0A0B0E; color-scheme:dark}
+
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--ink);font:16px/1.6 var(--f-body);-webkit-text-size-adjust:100%}
+body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);z-index:10;background:var(--bg)}
+a{color:var(--link);text-underline-offset:3px}
+:focus-visible{outline:3px solid var(--accent);outline-offset:2px;border-radius:6px}
+.wrap{max-width:680px;margin:0 auto;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+.tape{height:10px;background:repeating-linear-gradient(-45deg,var(--accent) 0 12px,var(--tape-dark) 12px 24px)}
+
+.top{display:flex;align-items:center;justify-content:space-between;gap:12px;padding-block:14px}
+.brand{font-family:var(--f-display);font-weight:700;font-size:15px;letter-spacing:.06em;color:var(--ink);text-decoration:none}
+.label{font-family:var(--f-mono);font-size:11px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--muted)}
+
+.hero{display:grid;gap:14px;padding-block:18px 8px}
+h1{font-family:var(--f-display);font-weight:700;font-size:clamp(30px,8.4vw,48px);line-height:1.06;letter-spacing:-.01em;margin:0;text-wrap:balance}
+h1 mark{background:linear-gradient(transparent 60%,var(--accent) 60%);color:inherit;padding:0 .04em}
+.lead{font-size:18px;line-height:1.55;margin:0;max-width:60ch}
+.passport{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));margin:6px 0 0;border-top:2px solid var(--ink)}
+.passport div{padding:10px 10px 10px 0;border-bottom:1px solid var(--line);min-width:0}
+.passport div:nth-child(odd){padding-right:14px}
+.passport dt{font-family:var(--f-mono);font-size:10.5px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--muted)}
+.passport dd{margin:2px 0 0;font-weight:600;font-size:15px;line-height:1.35}
+
+.progress{position:sticky;top:env(safe-area-inset-top,0px);z-index:5;background:var(--bg);padding-block:10px;margin-top:10px;border-bottom:1px solid var(--line)}
+.progress-row{display:flex;align-items:center;gap:12px}
+.bar{flex:1;height:8px;border-radius:99px;background:var(--line);overflow:hidden}
+.bar i{display:block;height:100%;width:0;background:var(--accent);transition:width .3s ease}
+.progress b{font-family:var(--f-mono);font-size:12px;letter-spacing:.06em;white-space:nowrap;font-variant-numeric:tabular-nums}
+
+.flow{display:grid;gap:18px;padding-block:18px 8px}
+.note{display:grid;gap:10px;border:1.5px dashed var(--line);border-radius:14px;padding:14px 16px}
+.note p{margin:0}
+.btn{appearance:none;font:600 14px/1 var(--f-body);border-radius:10px;padding:11px 14px;cursor:pointer;border:1.5px solid var(--ink);background:transparent;color:var(--ink);justify-self:start;text-decoration:none;display:inline-flex;align-items:center;gap:8px}
+.btn.solid{background:var(--accent);border-color:var(--accent);color:var(--on-accent)}
+
+.step{background:var(--surface);border:1px solid var(--line);border-radius:16px;padding:20px 18px;display:grid;gap:14px;min-width:0}
+.step.is-done{border-color:var(--ok)}
+.step-head{display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap}
+.stamp{font-family:var(--f-mono);font-weight:700;font-size:12px;letter-spacing:.14em;background:var(--accent);color:var(--on-accent);padding:5px 9px;border-radius:5px;text-transform:uppercase}
+.step.is-done .stamp{background:var(--ok);color:var(--surface)}
+h2{font-family:var(--f-display);font-weight:600;font-size:clamp(20px,5.4vw,24px);line-height:1.2;margin:0;text-wrap:balance}
+h3{font-size:16px;margin:4px 0 0;font-weight:600}
+.step p,.step ol,.step ul{margin:0}
+.step ol,.step ul{padding-left:1.25em;display:grid;gap:6px}
+.done{appearance:none;font:600 13px/1 var(--f-body);border-radius:99px;padding:8px 12px;border:1.5px solid var(--line);background:transparent;color:var(--muted);cursor:pointer}
+.done[aria-pressed="true"]{border-color:var(--ok);background:var(--ok-bg);color:var(--ok)}
+.muted{color:var(--muted);font-size:14.5px}
+kbd{font-family:var(--f-mono);font-size:.85em;border:1px solid var(--line);border-bottom-width:2px;border-radius:5px;padding:1px 6px;background:var(--bg)}
+.inline{font-family:var(--f-mono);font-size:.88em;background:var(--bg);border:1px solid var(--line);border-radius:5px;padding:1px 5px;overflow-wrap:anywhere}
+
+.code{background:var(--code-bg);border-radius:12px;overflow:hidden;min-width:0}
+.code-head{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:8px 8px 8px 14px;border-bottom:1px solid var(--code-line)}
+.code-head span{font-family:var(--f-mono);font-size:11px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--code-muted)}
+.copy{appearance:none;font:600 13px/1 var(--f-body);color:var(--code-fg);background:transparent;border:1.5px solid var(--code-muted);border-radius:8px;padding:8px 12px;cursor:pointer;white-space:nowrap}
+.copy.ok{background:var(--accent);border-color:var(--accent);color:var(--on-accent)}
+.code pre{margin:0;padding:12px 14px 14px;overflow-x:auto;color:var(--code-fg);font:500 13.5px/1.6 var(--f-mono);tab-size:2}
+.code.prompt pre{white-space:pre-wrap;overflow-wrap:anywhere;font:400 14px/1.6 var(--f-body)}
+.code.link pre{white-space:pre-wrap;overflow-wrap:anywhere}
+
+.tab{display:grid;gap:12px;min-width:0}
+.tab ol{margin:0;padding-left:1.25em;display:grid;gap:6px}
+.tab p{margin:0}
+.os{display:inline-flex;border:1.5px solid var(--line);border-radius:10px;padding:3px;gap:3px;justify-self:start}
+.os button{appearance:none;font:600 13px/1 var(--f-body);border:0;border-radius:7px;padding:8px 12px;background:transparent;color:var(--muted);cursor:pointer}
+.os button[aria-pressed="true"]{background:var(--ink);color:var(--bg)}
+
+.warn{background:var(--warn-bg);border-radius:12px;overflow:hidden;display:grid}
+.warn::before{content:"";height:6px;background:repeating-linear-gradient(-45deg,var(--accent) 0 9px,var(--tape-dark) 9px 18px)}
+.warn div{padding:12px 14px 14px;display:grid;gap:6px}
+.warn strong{font-family:var(--f-mono);font-size:11px;letter-spacing:.14em;text-transform:uppercase}
+.warn p{margin:0;font-size:15px}
+
+.why{display:grid;gap:10px}
+.why ul{margin:0;padding-left:1.25em;display:grid;gap:6px}
+
+.plain{display:grid;gap:12px;padding-block:8px}
+.plain h2{font-size:clamp(20px,5.4vw,24px)}
+.plain ul{margin:0;padding-left:1.25em;display:grid;gap:8px}
+details{border-top:1px solid var(--line);padding-block:12px}
+details:last-of-type{border-bottom:1px solid var(--line)}
+summary{cursor:pointer;font-weight:600;list-style:none;display:flex;justify-content:space-between;gap:12px}
+summary::-webkit-details-marker{display:none}
+summary::after{content:"+";font-family:var(--f-mono);font-weight:700}
+details[open] summary::after{content:"−"}
+details p{margin:8px 0 0}
+
+.cta{background:var(--ink);color:var(--bg);border-radius:18px;padding:24px 20px;display:grid;gap:12px;margin-block:22px 10px}
+.cta h2{color:var(--bg)}
+.cta p{margin:0;opacity:.85}
+footer{padding-block:12px 32px;color:var(--muted);font-size:13px}
+footer p{margin:0 0 4px}
+
+@media (max-width:380px){.passport{grid-template-columns:1fr}.passport div:nth-child(odd){padding-right:0}}
+@media (prefers-reduced-motion:reduce){*{transition:none!important}}
+</style>
+
+<style>
+.step .fixes{list-style:none;padding:0;margin:8px 0 0;display:grid;gap:0}
+.step .fixes li{display:grid;gap:4px;padding-block:12px;border-top:1px solid var(--line)}
+.step .fixes li:last-child{border-bottom:1px solid var(--line)}
+.fix-top{display:flex;align-items:baseline;justify-content:space-between;gap:10px;flex-wrap:wrap}
+.chip{font-family:var(--f-mono);font-size:10.5px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;border-radius:99px;padding:3px 8px;white-space:nowrap;border:1.5px solid var(--line);color:var(--muted)}
+.chip.safe{border-color:var(--ok);color:var(--ok)}
+.chip.router{border-color:var(--ink);color:var(--ink)}
+.step .fixes p{margin:0;font-size:15px;color:var(--muted)}
+.step details{border:0;padding:0}
+</style>
+
+</head>
+<body>
+<div class="tape" aria-hidden="true"></div>
+<header class="wrap top">
+  <a class="brand" href="https://www.instagram.com/ai.tseh/" target="_blank" rel="noopener">AI ЦЕХ</a>
+  <span class="label">Гайд · Вайфай</span>
+</header>
+
+<main class="wrap">
+  <section class="hero">
+    <p class="label">Готовые промпты для Claude Code и Codex</p>
+    <h1>Wi-Fi быстрее <mark>с&nbsp;Claude</mark></h1>
+    <p class="lead">Вставляешь промпт — агент сам замерит скорость, найдёт роутер, приложения, которые качают в фоне, и соседние сети на твоём канале. Потом исправит, что можно, и проведёт по настройкам роутера. Второй промпт покажет все устройства в сети, чтобы найти и выгнать чужих.</p>
+    <dl class="passport">
+      <div><dt>Время</dt><dd>10–15 минут</dd></div>
+      <div><dt>Агент</dt><dd>Claude Code или Codex</dd></div>
+      <div><dt>Система</dt><dd>Windows или macOS</dd></div>
+      <div><dt>Понадобится</dt><dd>пароль от настроек роутера</dd></div>
+    </dl>
+  </section>
+
+  <div class="progress" aria-live="polite">
+    <div class="progress-row">
+      <div class="bar" aria-hidden="true"><i id="bar"></i></div>
+      <b id="count">0 из 4</b>
+    </div>
+  </div>
+
+  <div class="flow">
+    <div class="note">
+      <p><b>Делай с компьютера, который подключён к Wi-Fi.</b> Сядь там, где обычно тормозит, и останови большие загрузки, чтобы замер был честным. Скинь ссылку себе в Telegram или на почту и открой её на компьютере.</p>
+      <button class="btn" type="button" data-copy data-copy-text="https://ai-tseh.github.io/wifi/">Скопировать ссылку на гайд</button>
+    </div>
+
+    <!-- ШАГ 1 -->
+    <article class="step" id="s1">
+      <div class="step-head">
+        <span class="stamp">Шаг 1</span>
+        <button class="done" type="button" data-step="s1" aria-pressed="false">Отметить</button>
+      </div>
+      <h2>Открой Claude Code или Codex</h2>
+      <p>Всё делает ИИ-агент на компьютере, который подключён к Wi-Fi. Выбери агента, которым пользуешься:</p>
+      <div class="os" role="group" aria-label="Агент">
+        <button type="button" data-tab-btn="agent:claude" aria-pressed="true">Claude</button>
+        <button type="button" data-tab-btn="agent:codex" aria-pressed="false">Codex</button>
+      </div>
+      <div class="tab" data-tab="agent:claude">
+        <ol>
+          <li>Открой приложение Claude. Если его нет — скачай для Windows или macOS с <a href="https://claude.ai/download" target="_blank" rel="noopener">claude.ai/download</a> и войди.</li>
+          <li>Перейди на вкладку <b>Code</b> и выбери папку «Документы».</li>
+        </ol>
+        <p class="muted">Режим Code есть в платной подписке Claude. Привык к терминалу — открой папку и набери <span class="inline">claude</span>, это то же самое.</p>
+      </div>
+      <div class="tab" data-tab="agent:codex" hidden>
+        <ol>
+          <li>Открой приложение Codex или терминал. Если Codex нет — поставь по <a href="https://developers.openai.com/codex" target="_blank" rel="noopener">официальной инструкции</a> и войди через аккаунт ChatGPT.</li>
+          <li>Выбери папку «Документы». В терминале — так:</li>
+        </ol>
+        <div class="code">
+          <div class="code-head"><span>Терминал · Windows и macOS</span><button class="copy" type="button" data-copy>Скопировать</button></div>
+          <pre><code>cd ~/Documents
+codex</code></pre>
+        </div>
+        <p class="muted">Лимиты Codex зависят от твоего тарифа ChatGPT.</p>
+      </div>
+      <p>Промпты одинаковые для Windows и Mac: агент сам определит систему. Когда он спрашивает разрешение на действие, читай, что он собирается сделать, и разрешай.</p>
+    </article>
+
+    <!-- ШАГ 2 -->
+    <article class="step" id="s2">
+      <div class="step-head">
+        <span class="stamp">Шаг 2</span>
+        <button class="done" type="button" data-step="s2" aria-pressed="false">Отметить</button>
+      </div>
+      <h2>Вставь промпт — агент найдёт, что тормозит</h2>
+      <div class="code prompt">
+        <div class="code-head"><span>Промпт 1 · Диагностика</span><button class="copy" type="button" data-copy>Скопировать</button></div>
+        <pre><code>Найди, что тормозит мой Wi-Fi, и помоги исправить.
+Сначала только смотри и измеряй: ничего не меняй в системе и роутере без моего «да», не ставь программы, не вводи пароли за меня. Перед каждой командой коротко пиши, что она делает.
+
+1. Подключение: определи систему (Windows или macOS), Wi-Fi адаптер, диапазон (2,4 / 5 / 6 ГГц), канал и его ширину, стандарт Wi-Fi, уровень сигнала и скорость связи с роутером. Если система не даёт видеть Wi-Fi сети без доступа к геолокации — открой мне нужные настройки и скажи, что включить.
+2. Роутер: найди адрес шлюза и, если получится, производителя по MAC-адресу.
+3. Скорость без установки программ: 3 раза скачай через curl файл https://speed.cloudflare.com/__down?bytes=25000000 и посчитай среднюю скорость в Мбит/с. Замерь пинг до роутера и до 1.1.1.1 (по 20 пакетов): задержку, разброс и потери. Сравни: если до роутера плохо — проблема в Wi-Fi, если до роутера хорошо, а до интернета плохо — у провайдера.
+4. Фоновые приложения: найди, какие процессы сейчас больше всего качают или отдают данные (обновления, облака, торренты, лаунчеры игр).
+5. Соседние сети: какие каналы заняты и сколько сильных сетей на моём канале. Предложи 1–2 самых свободных канала для моего диапазона.
+6. DNS: какие серверы стоят и сколько времени уходит на открытие пары популярных сайтов.
+
+Потом дай отчёт простым языком:
+- таблица «что проверили → что нашли → норма или проблема»;
+- одна-две главные причины тормозов, с цифрами из замеров;
+- план исправлений по порядку: сначала то, что можно сделать на компьютере, потом в роутере. Про каждое — что оно даёт и как откатить.
+Не обещай конкретный прирост скорости. В конце спроси, начинать ли исправлять.</code></pre>
+      </div>
+    </article>
+
+    <!-- ШАГ 3 -->
+    <article class="step" id="s3">
+      <div class="step-head">
+        <span class="stamp">Шаг 3</span>
+        <button class="done" type="button" data-step="s3" aria-pressed="false">Отметить</button>
+      </div>
+      <h2>Скажи «исправляй»</h2>
+      <p>На компьютере агент всё сделает сам. В настройках роутера он откроет нужную страницу в браузере и подскажет, куда нажать: пароль от роутера вводишь ты.</p>
+      <div class="code prompt">
+        <div class="code-head"><span>Промпт · Исправить</span><button class="copy" type="button" data-copy>Скопировать</button></div>
+        <pre><code>Исправляй по плану, по одному пункту.
+То, что делается на компьютере, — сделай сам. Для настроек роутера открой мне его страницу в браузере и веди по шагам: какой раздел открыть, что выбрать, что нажать. Пароль от роутера я введу сам.
+После каждого пункта перемерь скорость и пинг так же, как в первый раз, и покажи таблицу «было → стало». Если стало хуже — откати.</code></pre>
+      </div>
+      <details>
+        <summary>Что обычно предлагает агент</summary>
+        <ul class="fixes">
+          <li><div class="fix-top"><b>Остановить фоновые загрузки</b><span class="chip safe">на компьютере</span></div><p>Обновления, синхронизация облака, торренты, лаунчеры игр.</p></li>
+          <li><div class="fix-top"><b>Перейти на 5 ГГц</b><span class="chip safe">на компьютере</span></div><p>Если роутер двухдиапазонный: 5 ГГц быстрее, но хуже проходит через стены.</p></li>
+          <li><div class="fix-top"><b>Обновить драйвер Wi-Fi или сменить DNS</b><span class="chip safe">можно откатить</span></div><p>DNS ускоряет открытие сайтов, но не скорость скачивания.</p></li>
+          <li><div class="fix-top"><b>Сменить канал на свободный</b><span class="chip router">в роутере</span></div><p>Канал агент выберет по замеру соседних сетей.</p></li>
+          <li><div class="fix-top"><b>Перезагрузить и переставить роутер</b><span class="chip router">руками</span></div><p>Выше, на открытое место, подальше от толстых стен и микроволновки.</p></li>
+          <li><div class="fix-top"><b>Позвонить провайдеру</b><span class="chip">если тормозит дальше роутера</span></div><p>Если до роутера быстро, а до интернета медленно, дело не в Wi-Fi. Звони в поддержку с цифрами из замера.</p></li>
+        </ul>
+      </details>
+    </article>
+
+    <!-- ШАГ 4 -->
+    <article class="step" id="s4">
+      <div class="step-head">
+        <span class="stamp">Шаг 4</span>
+        <button class="done" type="button" data-step="s4" aria-pressed="false">Отметить</button>
+      </div>
+      <h2>Найди и выгони чужих</h2>
+      <div class="code prompt">
+        <div class="code-head"><span>Промпт 2 · Устройства в сети</span><button class="copy" type="button" data-copy>Скопировать</button></div>
+        <pre><code>Покажи все устройства в моей домашней сети и помоги выгнать чужие.
+Проверяй только мою локальную подсеть, ничего не ставь без моего согласия, пароли не вводи за меня. Перед каждой командой коротко пиши, что она делает.
+
+1. Определи мою систему, подсеть и адрес роутера.
+2. Найди устройства: посмотри ARP-таблицу, а чтобы она заполнилась, отправь по одному ping на каждый адрес моей подсети.
+3. Для каждого устройства: IP, MAC-адрес, производитель по MAC (если удастся определить), имя в сети (если есть). Отметь, где этот компьютер и где роутер. Отметь случайные MAC-адреса (второй символ 2, 6, A или E) — так прячутся телефоны и ноутбуки.
+4. Выведи таблицу с колонкой «что это может быть». Не угадывай уверенно — пиши «не знаю», если не знаешь. Предупреди, если список может быть неполным: спящие устройства часто не отвечают.
+5. Открой мне страницу роутера в браузере и веди по шагам: где список клиентов, как сверить его с твоей таблицей.
+6. Когда я скажу, какие устройства чужие, — подскажи, как их заблокировать именно в моём роутере. И предложи надёжный способ: новый пароль Wi-Fi (12+ символов), WPA2 или WPA3, выключенный WPS.</code></pre>
+      </div>
+      <div class="warn"><div>
+        <strong>Не спеши блокировать</strong>
+        <p>Незнакомое имя — не всегда чужой. Телефоны и ноутбуки подключаются под случайным MAC-адресом, а телевизоры, колонки и лампочки называются невнятно. Выключи Wi-Fi на подозрительном своём устройстве и посмотри, пропадёт ли оно из списка.</p>
+        <p>После смены пароля Wi-Fi отключатся все, и твои устройства тоже: переподключи их с новым паролем.</p>
+      </div></div>
+    </article>
+
+    <section class="plain">
+      <h2>Честно о главном</h2>
+      <ul>
+        <li><b>Скорость тарифа — потолок.</b> Если у тебя 100 Мбит/с, больше не будет. Ускорение бывает, только когда что-то мешало: занятый канал, фоновая загрузка, расстояние до роутера.</li>
+        <li><b>Без твоего «да» агент ничего не меняет.</b> Сначала он только смотрит и измеряет, и каждое изменение можно откатить.</li>
+        <li><b>Многое зависит от роутера.</b> Выбор канала, список устройств и блокировка есть не везде, а в роутерах от провайдера часть настроек закрыта.</li>
+        <li><b>Не сбрасывай роутер к заводским настройкам</b>, если не знаешь настроек провайдера: можно остаться без интернета до звонка в поддержку.</li>
+        <li><b>Блокировка по MAC — не замок.</b> MAC-адрес можно подменить. По-настоящему защищает длинный пароль Wi-Fi.</li>
+        <li><b>Только своя сеть.</b> Сканировать чужие сети и устройства нельзя.</li>
+      </ul>
+    </section>
+
+    <section class="plain">
+      <h2>Если что-то не работает</h2>
+      <div>
+        <details>
+          <summary>Любая ошибка</summary>
+          <p>Напиши в тот же чат с агентом, что видишь на экране, или вставь скриншот. Он сам разберётся.</p>
+        </details>
+        <details>
+          <summary>Не знаю пароль от роутера</summary>
+          <p>Посмотри наклейку снизу роутера или договор с провайдером. Если ты его менял и забыл, остаётся сброс кнопкой Reset — но перед этим узнай у провайдера настройки подключения.</p>
+        </details>
+        <details>
+          <summary>Замер каждый раз разный</summary>
+          <p>Для Wi-Fi это нормально. Попроси агента повторить замер 2–3 раза и сравнивай средние значения.</p>
+        </details>
+      </div>
+    </section>
+
+    <section class="cta">
+      <span class="label" style="color:inherit;opacity:.7">AI ЦЕХ</span>
+      <h2>Стало быстрее? Дальше — больше</h2>
+      <p>Разбираю нейросети и Claude на практике: что реально работает, с готовыми промптами и гайдами вроде этого. Подпишись, чтобы не пропустить следующий.</p>
+      <a class="btn solid" href="https://www.instagram.com/ai.tseh/" target="_blank" rel="noopener">Подписаться на @ai.tseh</a>
+    </section>
+  </div>
+</main>
+
+<footer class="wrap">
+  <p>Промпты сначала только читают и измеряют. Изменения в системе и роутере — только после твоего подтверждения.</p>
+  <p>Гайд проверен 26 ноября 2026.</p>
+</footer>
+
+<script>
+(function(){
+  var KEY = 'aitseh-guide-wifi';
+  var state = {};
+  try { state = JSON.parse(localStorage.getItem(KEY) || '{}') || {}; } catch (e) { state = {}; }
+  state.done = state.done || {}; state.tabs = state.tabs || {};
+  function save(){ try { localStorage.setItem(KEY, JSON.stringify(state)); } catch (e) {} }
+
+  // Копирование
+  document.addEventListener('click', function(e){
+    var b = e.target.closest('[data-copy]');
+    if (!b) return;
+    var text = b.getAttribute('data-copy-text');
+    var codeEl = null;
+    if (!text) { var box = b.closest('.code'); codeEl = box && box.querySelector('code'); text = codeEl ? codeEl.textContent : ''; }
+    if (!b.dataset.label) b.dataset.label = b.textContent;
+    function flash(msg){
+      b.textContent = msg; b.classList.add('ok');
+      clearTimeout(b._t); b._t = setTimeout(function(){ b.textContent = b.dataset.label; b.classList.remove('ok'); }, 1800);
+    }
+    function fallback(){
+      if (codeEl) { var r = document.createRange(); r.selectNodeContents(codeEl); var s = getSelection(); s.removeAllRanges(); s.addRange(r); flash('Выделено — скопируй'); }
+      else { flash(text); }
+    }
+    try { navigator.clipboard.writeText(text).then(function(){ flash('Скопировано'); }, fallback); } catch (err) { fallback(); }
+  });
+
+  // Переключатели (агент)
+  function setTab(group, value){
+    document.querySelectorAll('[data-tab^="' + group + ':"]').forEach(function(el){ el.hidden = el.getAttribute('data-tab') !== group + ':' + value; });
+    document.querySelectorAll('[data-tab-btn^="' + group + ':"]').forEach(function(btn){ btn.setAttribute('aria-pressed', String(btn.getAttribute('data-tab-btn') === group + ':' + value)); });
+  }
+  document.querySelectorAll('[data-tab-btn]').forEach(function(btn){
+    btn.addEventListener('click', function(){
+      var p = btn.getAttribute('data-tab-btn').split(':');
+      state.tabs[p[0]] = p[1]; save(); setTab(p[0], p[1]);
+    });
+  });
+  Object.keys(state.tabs).forEach(function(g){ setTab(g, state.tabs[g]); });
+
+  // Отметки шагов
+  var buttons = Array.prototype.slice.call(document.querySelectorAll('[data-step]'));
+  function render(){
+    var n = 0;
+    buttons.forEach(function(btn){
+      var id = btn.getAttribute('data-step'), on = !!state.done[id];
+      if (on) n++;
+      btn.setAttribute('aria-pressed', String(on));
+      btn.textContent = on ? 'Сделано ✓' : 'Отметить';
+      var card = document.getElementById(id); if (card) card.classList.toggle('is-done', on);
+    });
+    document.getElementById('count').textContent = n + ' из ' + buttons.length;
+    document.getElementById('bar').style.width = (buttons.length ? n / buttons.length * 100 : 0) + '%';
+  }
+  buttons.forEach(function(btn){
+    btn.addEventListener('click', function(){ var id = btn.getAttribute('data-step'); state.done[id] = !state.done[id]; save(); render(); });
+  });
+  render();
+})();
+</script>
+
+</body>
+</html>

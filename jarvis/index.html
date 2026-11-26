@@ -1,0 +1,387 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Свой Джарвис за 4 шага — AI ЦЕХ</title>
+<meta name="description" content="Голосовой ИИ-ассистент на компьютере: открываешь Claude Code или Codex, вставляешь промпт — агент всё ставит сам. Windows и macOS.">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="AI ЦЕХ">
+<meta property="og:title" content="Свой Джарвис за 4 шага — AI ЦЕХ">
+<meta property="og:description" content="Голосовой ИИ-ассистент на компьютере: открываешь Claude Code или Codex, вставляешь промпт — агент всё ставит сам. Windows и macOS.">
+<meta property="og:url" content="https://ai-tseh.github.io/jarvis/">
+<meta name="theme-color" content="#14161B">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='6' fill='%23FFC21A'/%3E%3Ctext x='16' y='22' font-family='Arial' font-weight='900' font-size='14' text-anchor='middle' fill='%2314161B'%3EAI%3C/text%3E%3C/svg%3E">
+<style>
+:root{padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+body{margin:0}
+img{max-width:100%}
+[hidden]{display:none!important}
+</style>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Golos+Text:wght@400;500;600&family=JetBrains+Mono:wght@500;700&family=Unbounded:wght@600;700&display=swap">
+<style>
+/* Layout: одна колонка до 680px. Гайд оформлен как наряд в цеху: сигнальная лента, бирки шагов, паспорт работы. */
+:root{
+  --bg:#ECEEF1; --surface:#FFFFFF; --ink:#14161B; --muted:#596170; --line:#D3D8DF;
+  --accent:#FFC21A; --on-accent:#14161B; --link:#1D4ED8; --ok:#167A4C; --ok-bg:#E3F4EA;
+  --code-bg:#16181D; --code-fg:#E9ECF1; --code-muted:#9AA3B2; --code-line:#2C313A;
+  --warn-bg:#FFF5D4; --tape-dark:#14161B;
+  --f-display:"Unbounded","Arial Black",system-ui,sans-serif;
+  --f-body:"Golos Text","Segoe UI",Roboto,system-ui,sans-serif;
+  --f-mono:"JetBrains Mono",ui-monospace,Consolas,"Courier New",monospace;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --bg:#101216; --surface:#191C22; --ink:#ECEEF2; --muted:#9AA2AF; --line:#2B3039;
+  --accent:#FFC21A; --on-accent:#14161B; --link:#93B4FF; --ok:#4CC98C; --ok-bg:#15291F;
+  --code-bg:#0A0B0E; --code-fg:#E9ECF1; --code-muted:#8E97A6; --code-line:#252A32;
+  --warn-bg:#2A2410; --tape-dark:#0A0B0E; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#101216; --surface:#191C22; --ink:#ECEEF2; --muted:#9AA2AF; --line:#2B3039;
+  --accent:#FFC21A; --on-accent:#14161B; --link:#93B4FF; --ok:#4CC98C; --ok-bg:#15291F;
+  --code-bg:#0A0B0E; --code-fg:#E9ECF1; --code-muted:#8E97A6; --code-line:#252A32;
+  --warn-bg:#2A2410; --tape-dark:#0A0B0E; color-scheme:dark}
+
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--ink);font:16px/1.6 var(--f-body);-webkit-text-size-adjust:100%}
+body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);z-index:10;background:var(--bg)}
+a{color:var(--link);text-underline-offset:3px}
+:focus-visible{outline:3px solid var(--accent);outline-offset:2px;border-radius:6px}
+.wrap{max-width:680px;margin:0 auto;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+.tape{height:10px;background:repeating-linear-gradient(-45deg,var(--accent) 0 12px,var(--tape-dark) 12px 24px)}
+
+.top{display:flex;align-items:center;justify-content:space-between;gap:12px;padding-block:14px}
+.brand{font-family:var(--f-display);font-weight:700;font-size:15px;letter-spacing:.06em;color:var(--ink);text-decoration:none}
+.label{font-family:var(--f-mono);font-size:11px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--muted)}
+
+.hero{display:grid;gap:14px;padding-block:18px 8px}
+h1{font-family:var(--f-display);font-weight:700;font-size:clamp(30px,8.4vw,48px);line-height:1.06;letter-spacing:-.01em;margin:0;text-wrap:balance}
+h1 mark{background:linear-gradient(transparent 60%,var(--accent) 60%);color:inherit;padding:0 .04em}
+.lead{font-size:18px;line-height:1.55;margin:0;max-width:60ch}
+.passport{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));margin:6px 0 0;border-top:2px solid var(--ink)}
+.passport div{padding:10px 10px 10px 0;border-bottom:1px solid var(--line);min-width:0}
+.passport div:nth-child(odd){padding-right:14px}
+.passport dt{font-family:var(--f-mono);font-size:10.5px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--muted)}
+.passport dd{margin:2px 0 0;font-weight:600;font-size:15px;line-height:1.35}
+
+.progress{position:sticky;top:env(safe-area-inset-top,0px);z-index:5;background:var(--bg);padding-block:10px;margin-top:10px;border-bottom:1px solid var(--line)}
+.progress-row{display:flex;align-items:center;gap:12px}
+.bar{flex:1;height:8px;border-radius:99px;background:var(--line);overflow:hidden}
+.bar i{display:block;height:100%;width:0;background:var(--accent);transition:width .3s ease}
+.progress b{font-family:var(--f-mono);font-size:12px;letter-spacing:.06em;white-space:nowrap;font-variant-numeric:tabular-nums}
+
+.flow{display:grid;gap:18px;padding-block:18px 8px}
+.note{display:grid;gap:10px;border:1.5px dashed var(--line);border-radius:14px;padding:14px 16px}
+.note p{margin:0}
+.btn{appearance:none;font:600 14px/1 var(--f-body);border-radius:10px;padding:11px 14px;cursor:pointer;border:1.5px solid var(--ink);background:transparent;color:var(--ink);justify-self:start;text-decoration:none;display:inline-flex;align-items:center;gap:8px}
+.btn.solid{background:var(--accent);border-color:var(--accent);color:var(--on-accent)}
+
+.step{background:var(--surface);border:1px solid var(--line);border-radius:16px;padding:20px 18px;display:grid;gap:14px;min-width:0}
+.step.is-done{border-color:var(--ok)}
+.step-head{display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap}
+.stamp{font-family:var(--f-mono);font-weight:700;font-size:12px;letter-spacing:.14em;background:var(--accent);color:var(--on-accent);padding:5px 9px;border-radius:5px;text-transform:uppercase}
+.step.is-done .stamp{background:var(--ok);color:var(--surface)}
+h2{font-family:var(--f-display);font-weight:600;font-size:clamp(20px,5.4vw,24px);line-height:1.2;margin:0;text-wrap:balance}
+h3{font-size:16px;margin:4px 0 0;font-weight:600}
+.step p,.step ol,.step ul{margin:0}
+.step ol,.step ul{padding-left:1.25em;display:grid;gap:6px}
+.done{appearance:none;font:600 13px/1 var(--f-body);border-radius:99px;padding:8px 12px;border:1.5px solid var(--line);background:transparent;color:var(--muted);cursor:pointer}
+.done[aria-pressed="true"]{border-color:var(--ok);background:var(--ok-bg);color:var(--ok)}
+.muted{color:var(--muted);font-size:14.5px}
+kbd{font-family:var(--f-mono);font-size:.85em;border:1px solid var(--line);border-bottom-width:2px;border-radius:5px;padding:1px 6px;background:var(--bg)}
+.inline{font-family:var(--f-mono);font-size:.88em;background:var(--bg);border:1px solid var(--line);border-radius:5px;padding:1px 5px;overflow-wrap:anywhere}
+
+.code{background:var(--code-bg);border-radius:12px;overflow:hidden;min-width:0}
+.code-head{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:8px 8px 8px 14px;border-bottom:1px solid var(--code-line)}
+.code-head span{font-family:var(--f-mono);font-size:11px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--code-muted)}
+.copy{appearance:none;font:600 13px/1 var(--f-body);color:var(--code-fg);background:transparent;border:1.5px solid var(--code-muted);border-radius:8px;padding:8px 12px;cursor:pointer;white-space:nowrap}
+.copy.ok{background:var(--accent);border-color:var(--accent);color:var(--on-accent)}
+.code pre{margin:0;padding:12px 14px 14px;overflow-x:auto;color:var(--code-fg);font:500 13.5px/1.6 var(--f-mono);tab-size:2}
+.code.prompt pre{white-space:pre-wrap;overflow-wrap:anywhere;font:400 14px/1.6 var(--f-body)}
+.code.link pre{white-space:pre-wrap;overflow-wrap:anywhere}
+
+.tab{display:grid;gap:12px;min-width:0}
+.tab ol{margin:0;padding-left:1.25em;display:grid;gap:6px}
+.tab p{margin:0}
+.os{display:inline-flex;border:1.5px solid var(--line);border-radius:10px;padding:3px;gap:3px;justify-self:start}
+.os button{appearance:none;font:600 13px/1 var(--f-body);border:0;border-radius:7px;padding:8px 12px;background:transparent;color:var(--muted);cursor:pointer}
+.os button[aria-pressed="true"]{background:var(--ink);color:var(--bg)}
+
+.warn{background:var(--warn-bg);border-radius:12px;overflow:hidden;display:grid}
+.warn::before{content:"";height:6px;background:repeating-linear-gradient(-45deg,var(--accent) 0 9px,var(--tape-dark) 9px 18px)}
+.warn div{padding:12px 14px 14px;display:grid;gap:6px}
+.warn strong{font-family:var(--f-mono);font-size:11px;letter-spacing:.14em;text-transform:uppercase}
+.warn p{margin:0;font-size:15px}
+
+.why{display:grid;gap:10px}
+.why ul{margin:0;padding-left:1.25em;display:grid;gap:6px}
+
+.plain{display:grid;gap:12px;padding-block:8px}
+.plain h2{font-size:clamp(20px,5.4vw,24px)}
+.plain ul{margin:0;padding-left:1.25em;display:grid;gap:8px}
+details{border-top:1px solid var(--line);padding-block:12px}
+details:last-of-type{border-bottom:1px solid var(--line)}
+summary{cursor:pointer;font-weight:600;list-style:none;display:flex;justify-content:space-between;gap:12px}
+summary::-webkit-details-marker{display:none}
+summary::after{content:"+";font-family:var(--f-mono);font-weight:700}
+details[open] summary::after{content:"−"}
+details p{margin:8px 0 0}
+
+.cta{background:var(--ink);color:var(--bg);border-radius:18px;padding:24px 20px;display:grid;gap:12px;margin-block:22px 10px}
+.cta h2{color:var(--bg)}
+.cta p{margin:0;opacity:.85}
+footer{padding-block:12px 32px;color:var(--muted);font-size:13px}
+footer p{margin:0 0 4px}
+
+@media (max-width:380px){.passport{grid-template-columns:1fr}.passport div:nth-child(odd){padding-right:0}}
+@media (prefers-reduced-motion:reduce){*{transition:none!important}}
+</style>
+
+</head>
+<body>
+<div class="tape" aria-hidden="true"></div>
+<header class="wrap top">
+  <a class="brand" href="https://www.instagram.com/ai.tseh/" target="_blank" rel="noopener">AI ЦЕХ</a>
+  <span class="label">Гайд · Джарвис</span>
+</header>
+
+<main class="wrap">
+  <section class="hero">
+    <p class="label">Голосовой ИИ-ассистент на твоём компьютере</p>
+    <h1>Свой <mark>Джарвис</mark> за&nbsp;4&nbsp;шага</h1>
+    <p class="lead">Говоришь «Hey Jarvis» — он слушает, отвечает голосом и делает задачи: ищет в интернете, читает почту, рассказывает, что у тебя в календаре. Ставить руками ничего не нужно: вставляешь промпт в Claude или Codex, и агент всё делает сам.</p>
+    <dl class="passport">
+      <div><dt>Время</dt><dd>около получаса</dd></div>
+      <div><dt>Цена</dt><dd>код бесплатный, нужна подписка Claude</dd></div>
+      <div><dt>Система</dt><dd>Windows или macOS</dd></div>
+      <div><dt>Агент</dt><dd>Claude Code или Codex</dd></div>
+    </dl>
+  </section>
+
+  <div class="progress" aria-live="polite">
+    <div class="progress-row">
+      <div class="bar" aria-hidden="true"><i id="bar"></i></div>
+      <b id="count">0 из 4</b>
+    </div>
+  </div>
+
+  <div class="flow">
+    <div class="note">
+      <p><b>Делай с компьютера.</b> Джарвис ставится на компьютер, и промпты удобнее вставлять там. Скинь ссылку себе в Telegram или на почту и открой её на компьютере.</p>
+      <button class="btn" type="button" data-copy data-copy-text="https://ai-tseh.github.io/jarvis/">Скопировать ссылку на гайд</button>
+    </div>
+
+    <!-- ШАГ 1 -->
+    <article class="step" id="s1">
+      <div class="step-head">
+        <span class="stamp">Шаг 1</span>
+        <button class="done" type="button" data-step="s1" aria-pressed="false">Отметить</button>
+      </div>
+      <h2>Открой Claude Code или Codex</h2>
+      <p>Джарвиса ставит и настраивает ИИ-агент на твоём компьютере. Выбери агента, которым пользуешься:</p>
+      <div class="os" role="group" aria-label="Агент">
+        <button type="button" data-tab-btn="agent:claude" aria-pressed="true">Claude</button>
+        <button type="button" data-tab-btn="agent:codex" aria-pressed="false">Codex</button>
+      </div>
+      <div class="tab" data-tab="agent:claude">
+        <ol>
+          <li>Открой приложение Claude. Если его нет — скачай для Windows или macOS с <a href="https://claude.ai/download" target="_blank" rel="noopener">claude.ai/download</a> и войди.</li>
+          <li>Перейди на вкладку <b>Code</b> и выбери папку «Документы».</li>
+        </ol>
+        <p class="muted">Режим Code есть в платной подписке Claude. Привык к терминалу — открой папку и набери <span class="inline">claude</span>, это то же самое.</p>
+      </div>
+      <div class="tab" data-tab="agent:codex" hidden>
+        <ol>
+          <li>Открой приложение Codex или терминал. Если Codex нет — поставь по <a href="https://developers.openai.com/codex" target="_blank" rel="noopener">официальной инструкции</a> и войди через аккаунт ChatGPT.</li>
+          <li>Выбери папку «Документы». В терминале — так:</li>
+        </ol>
+        <div class="code">
+          <div class="code-head"><span>Терминал · Windows и macOS</span><button class="copy" type="button" data-copy>Скопировать</button></div>
+          <pre><code>cd ~/Documents
+codex</code></pre>
+        </div>
+        <p class="muted">Лимиты Codex зависят от твоего тарифа ChatGPT. Сам Джарвис работает на Claude Code — промпт из шага 2 проверит, что он установлен и ты в нём вошёл.</p>
+      </div>
+      <p>Промпты одинаковые для Windows и Mac: агент сам определит систему. Когда он спрашивает разрешение на действие, читай, что он собирается сделать, и разрешай.</p>
+    </article>
+
+    <!-- ШАГ 2 -->
+    <article class="step" id="s2">
+      <div class="step-head">
+        <span class="stamp">Шаг 2</span>
+        <button class="done" type="button" data-step="s2" aria-pressed="false">Отметить</button>
+      </div>
+      <h2>Вставь промпт — агент всё установит</h2>
+      <p>Агент сам поставит недостающие программы, скачает проект с GitHub, настроит голос и сделает ярлык «Джарвис» на рабочем столе.</p>
+      <div class="code prompt">
+        <div class="code-head"><span>Промпт · Установка</span><button class="copy" type="button" data-copy>Скопировать</button></div>
+        <pre><code>Установи мне голосового ассистента JARVIS из открытого проекта https://github.com/adewaskar/jarvis и доведи его до рабочего состояния. Я новичок: всё делай сам, а меня спрашивай, только когда без меня никак.
+
+1. Определи мою систему (Windows или macOS). Проверь, что есть Git, Node.js версии 20 или новее и Claude Code, в котором я вошёл в аккаунт: Джарвис работает только на Claude Code. Чего нет — поставь сам официальным способом для моей системы, а войти в Claude Code помоги мне.
+2. Склонируй репозиторий в папку jarvis в моей папке «Документы», прочитай README и установи всё по нему: npm install, потом npm run setup. Если setup на что-то жалуется — исправь.
+3. Голос. Спроси, есть ли у меня API-ключ ElevenLabs. Если нет — коротко объясни, где его взять (elevenlabs.io → API Keys → Create API Key, доступы Text to Speech и Speech to Text), и подожди. Когда пришлю — сохрани его в постоянную переменную окружения ELEVENLABS_API_KEY для моего пользователя и больше нигде его не показывай. Если я отвечу «без голоса» — пропусти этот пункт.
+4. Сделай на рабочем столе ярлык «Джарвис» (на Windows — файл .bat, на macOS — .command): он запускает npm start в папке проекта в отдельном окне, а через несколько секунд открывает http://localhost:5173 в Chrome или Edge.
+5. Запусти Джарвиса этим ярлыком, проверь, что всё поднялось, и скажи, что нажать в браузере.
+
+Не включай режим --writes и не меняй настройки безопасности проекта (bridge/policy.mjs). Перед каждым шагом коротко пиши, что делаешь.</code></pre>
+      </div>
+      <div class="warn"><div>
+        <strong>Про ключ ElevenLabs</strong>
+        <p>С ключом у Джарвиса живой голос, и он понимает русскую речь. Без ключа он понимает только английский. Для пробы хватит бесплатного тарифа ElevenLabs.</p>
+        <p>Ключ — как пароль. Отправляй его только агенту на своём компьютере, не показывай на видео и не пересылай в другие чаты.</p>
+      </div></div>
+    </article>
+
+    <!-- ШАГ 3 -->
+    <article class="step" id="s3">
+      <div class="step-head">
+        <span class="stamp">Шаг 3</span>
+        <button class="done" type="button" data-step="s3" aria-pressed="false">Отметить</button>
+      </div>
+      <h2>Скажи «Hey Jarvis»</h2>
+      <p>Агент откроет Джарвиса в браузере. Тут три нажатия, их браузер даст сделать только тебе:</p>
+      <ol>
+        <li>Нажми <b>INITIALISE</b>.</li>
+        <li>Разреши доступ к микрофону.</li>
+        <li>Скажи <b>«Hey Jarvis»</b> или зажми <kbd>Пробел</kbd> и говори.</li>
+      </ol>
+      <p>В следующий раз запускай Джарвиса ярлыком на рабочем столе.</p>
+      <div class="warn"><div>
+        <strong>Не закрывай окно консоли</strong>
+        <p>Ярлык открывает чёрное окно: в нём работает «мозг» Джарвиса. Закроешь его — Джарвис замолчит.</p>
+      </div></div>
+    </article>
+
+    <!-- ШАГ 4 -->
+    <article class="step" id="s4">
+      <div class="step-head">
+        <span class="stamp">Шаг 4</span>
+        <button class="done" type="button" data-step="s4" aria-pressed="false">Отметить</button>
+      </div>
+      <h2>Подключи почту, календарь, документы, CRM</h2>
+      <p>Вставь в тот же чат с агентом. В квадратных скобках впиши свою CRM или другой сервис, а если не нужно — удали эту строку.</p>
+      <div class="code prompt">
+        <div class="code-head"><span>Промпт · Сервисы</span><button class="copy" type="button" data-copy>Скопировать</button></div>
+        <pre><code>Подключи к моему Джарвису почту, календарь и документы.
+Ещё подключи: [название CRM или другого сервиса].
+
+1. Gmail, Google Calendar и Google Drive подключаются как коннекторы в настройках claude.ai. Скажи, что мне там нажать, и подожди, пока я подключу.
+2. Потом поправь ярлык «Джарвис» на рабочем столе, чтобы он запускался с переменной JARVIS_ACCOUNT_CONNECTORS=1, и перезапусти Джарвиса.
+3. Для других сервисов найди официальный MCP-сервер или способ подключиться через API. Объясни простыми словами, что Джарвис сможет читать и что менять, и после моего «да» подключи его к Claude Code. Если нужен ключ — скажи, где его взять, и сохрани так же, как ключ ElevenLabs.
+
+Режим --writes не включай без моего отдельного разрешения.</code></pre>
+      </div>
+      <p>Войти в аккаунт Google за тебя агент не может: это делаешь сам, он подскажет, куда нажать. Потом спроси Джарвиса: «Какие у меня встречи завтра?» Если с первого раза не нашёл — спроси ещё раз: сервисы подключаются со второй реплики.</p>
+      <div class="warn"><div>
+        <strong>Чтобы он не только читал, но и действовал</strong>
+        <p>По умолчанию Джарвис только смотрит: найдёт письмо, но не отправит. Чтобы отправлял и удалял, попроси агента: «Сделай второй ярлык Джарвиса с режимом --writes». В этом режиме Джарвис может всё, что может твой пользователь на компьютере. Фраза «почисти загрузки» здесь значит настоящее удаление.</p>
+      </div></div>
+    </article>
+
+    <section class="plain">
+      <h2>Честно о главном</h2>
+      <ul>
+        <li><b>«Бесплатно» — про код.</b> Думает Джарвис на твоей подписке Claude и тратит те же лимиты, что обычная работа в Claude Code. Даже если ставил его через Codex, нужен Claude Code с подпиской.</li>
+        <li><b>Без ElevenLabs — только английский.</b> С ключом он понимает русскую речь и отвечает голосом ElevenLabs.</li>
+        <li><b>Нужен обычный Chrome или Edge.</b> Встроенные окна приложений блокируют микрофон: страница выглядит живой, но ничего не слышит.</li>
+        <li><b>Это чужой открытый код.</b> Проект открытый, лицензия MIT, около тысячи звёзд на GitHub. Ставь только по ссылке из этого гайда.</li>
+        <li><b>Только для тебя.</b> Джарвис доступен только с этого компьютера. Не открывай его в сеть.</li>
+      </ul>
+    </section>
+
+    <section class="plain">
+      <h2>Если что-то не работает</h2>
+      <div>
+        <details>
+          <summary>Любая ошибка</summary>
+          <p>Напиши в тот же чат с агентом, что видишь на экране, или вставь скриншот. Он сам разберётся и починит.</p>
+        </details>
+        <details>
+          <summary>Джарвис не слышит или молчит</summary>
+          <p>Нажми <kbd>D</kbd> — откроется диагностика: там видно, слышит ли он тебя и выдаёт ли звук. <kbd>T</kbd> — проверка звука. Проверь, что это Chrome или Edge в обычном окне и микрофон разрешён.</p>
+        </details>
+        <details>
+          <summary>Говорю по-русски, а он не понимает</summary>
+          <p>Значит, ключ ElevenLabs не подхватился. Скажи агенту: «Джарвис не видит ключ ElevenLabs, проверь и почини».</p>
+        </details>
+      </div>
+    </section>
+
+    <section class="cta">
+      <span class="label" style="color:inherit;opacity:.7">AI ЦЕХ</span>
+      <h2>Получилось? Дальше — больше</h2>
+      <p>Разбираю нейросети и Claude на практике: что реально работает, с готовыми промптами и гайдами вроде этого. Подпишись, чтобы не пропустить следующий.</p>
+      <a class="btn solid" href="https://www.instagram.com/ai.tseh/" target="_blank" rel="noopener">Подписаться на @ai.tseh</a>
+    </section>
+  </div>
+</main>
+
+<footer class="wrap">
+  <p>Проект: <a href="https://github.com/adewaskar/jarvis" target="_blank" rel="noopener">github.com/adewaskar/jarvis</a>, лицензия MIT.</p>
+  <p>Гайд сверен с README проекта 26 ноября 2026.</p>
+</footer>
+
+<script>
+(function(){
+  var KEY = 'aitseh-guide-jarvis';
+  var state = {};
+  try { state = JSON.parse(localStorage.getItem(KEY) || '{}') || {}; } catch (e) { state = {}; }
+  state.done = state.done || {}; state.tabs = state.tabs || {};
+  function save(){ try { localStorage.setItem(KEY, JSON.stringify(state)); } catch (e) {} }
+
+  // Копирование
+  document.addEventListener('click', function(e){
+    var b = e.target.closest('[data-copy]');
+    if (!b) return;
+    var text = b.getAttribute('data-copy-text');
+    var codeEl = null;
+    if (!text) { var box = b.closest('.code'); codeEl = box && box.querySelector('code'); text = codeEl ? codeEl.textContent : ''; }
+    if (!b.dataset.label) b.dataset.label = b.textContent;
+    function flash(msg){
+      b.textContent = msg; b.classList.add('ok');
+      clearTimeout(b._t); b._t = setTimeout(function(){ b.textContent = b.dataset.label; b.classList.remove('ok'); }, 1800);
+    }
+    function fallback(){
+      if (codeEl) { var r = document.createRange(); r.selectNodeContents(codeEl); var s = getSelection(); s.removeAllRanges(); s.addRange(r); flash('Выделено — скопируй'); }
+      else { flash(text); }
+    }
+    try { navigator.clipboard.writeText(text).then(function(){ flash('Скопировано'); }, fallback); } catch (err) { fallback(); }
+  });
+
+  // Переключатели (агент)
+  function setTab(group, value){
+    document.querySelectorAll('[data-tab^="' + group + ':"]').forEach(function(el){ el.hidden = el.getAttribute('data-tab') !== group + ':' + value; });
+    document.querySelectorAll('[data-tab-btn^="' + group + ':"]').forEach(function(btn){ btn.setAttribute('aria-pressed', String(btn.getAttribute('data-tab-btn') === group + ':' + value)); });
+  }
+  document.querySelectorAll('[data-tab-btn]').forEach(function(btn){
+    btn.addEventListener('click', function(){
+      var p = btn.getAttribute('data-tab-btn').split(':');
+      state.tabs[p[0]] = p[1]; save(); setTab(p[0], p[1]);
+    });
+  });
+  Object.keys(state.tabs).forEach(function(g){ setTab(g, state.tabs[g]); });
+
+  // Отметки шагов
+  var buttons = Array.prototype.slice.call(document.querySelectorAll('[data-step]'));
+  function render(){
+    var n = 0;
+    buttons.forEach(function(btn){
+      var id = btn.getAttribute('data-step'), on = !!state.done[id];
+      if (on) n++;
+      btn.setAttribute('aria-pressed', String(on));
+      btn.textContent = on ? 'Сделано ✓' : 'Отметить';
+      var card = document.getElementById(id); if (card) card.classList.toggle('is-done', on);
+    });
+    document.getElementById('count').textContent = n + ' из ' + buttons.length;
+    document.getElementById('bar').style.width = (buttons.length ? n / buttons.length * 100 : 0) + '%';
+  }
+  buttons.forEach(function(btn){
+    btn.addEventListener('click', function(){ var id = btn.getAttribute('data-step'); state.done[id] = !state.done[id]; save(); render(); });
+  });
+  render();
+})();
+</script>
+
+</body>
+</html>
